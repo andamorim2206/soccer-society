@@ -97,7 +97,7 @@ async function cancelMatch(id) {
     if (!confirm('Tem certeza que deseja cancelar esta partida?')) return;
 
     try {
-        const res = await fetch(`/api/matches/${id}/cancel`, {
+        const res = await fetch(`/api/matchGame/${id}/finalized`, {
             method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -105,7 +105,7 @@ async function cancelMatch(id) {
         });
 
         if (res.ok) {
-            alert('Partida cancelada com sucesso!');
+            alert('Partida finalizada com sucesso!');
             loadMatches();
         } else {
             alert('Erro ao cancelar a partida.');

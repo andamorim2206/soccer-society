@@ -9,3 +9,5 @@ Route::get('/api/matchGame/{matchId}/confirm', [MatchGameController::class, 'con
 Route::post('/api/matchGame/{matchId}/confirm', [MatchGameController::class, 'confirmPlayers'])->name('match.confirm');
 
 Route::get('/api/matchGame/list', [MatchGameController::class, 'listAllGames']);
+
+Route::post('/api/matchGame/{matchId}/finalized', [MatchGameController::class, 'finalized']);

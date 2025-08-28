@@ -85,4 +85,13 @@ class MatchGameController extends Controller
         $games = MatchGame::orderBy('created_at', 'desc')->get();
         return response()->json($games);
     }
+
+    public function finalized($id)
+    {
+        MatchGame::where('id', $id)->update([
+            'status' => 'finalizado',
+        ]);
+
+        return response()->json(['message' => 'Partida cancelada com sucesso',]);
+    }
 }

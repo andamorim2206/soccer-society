@@ -100,6 +100,8 @@ form.addEventListener('submit', async (e) => {
 
         if (res.ok) {
             responseDiv.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
+
+            window.location.href = '/';
             loadPlayers();
         } else {
             responseDiv.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;

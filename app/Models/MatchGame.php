@@ -38,4 +38,10 @@ class MatchGame extends Model
         $goleiros = $players->where('position', 'Goleiro')->count();
         return $players->count() >= 12 && $goleiros >= 2;
     }
+
+    public function cancel()
+    {
+        $this->status = 'cancelado';
+        $this->save();
+    }
 }
