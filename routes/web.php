@@ -20,3 +20,7 @@ Route::get('/player/list', function () {
 Route::get('/matchgame/create', function () {
     return view('Matchgame.matchgameform');
 })->name('matchgame.create');
+
+Route::get('/matchgame/{id}/list/confirmed', function () {
+    return view('Matchgame.matchgameconfirmed');
+})->name('matchgame.confirmed');

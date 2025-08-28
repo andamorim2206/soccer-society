@@ -59,7 +59,7 @@ async function loadMatches() {
     tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Carregando...</td></tr>';
 
     try {
-        const res = await fetch('/api/matches');
+        const res = await fetch('/api/matchGame/list');
         const matches = await res.json();
 
         if (res.ok && matches.length > 0) {

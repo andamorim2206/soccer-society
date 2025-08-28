@@ -60,6 +60,9 @@ form.addEventListener('submit', async (e) => {
         if (res.ok) {
             responseDiv.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
             form.reset();
+
+            // Redireciona para a tela de confirmação dos jogadores
+            window.location.href = `/matchgame/${result.matchId}/list/confirmed`;
         } else {
             responseDiv.innerHTML = `<div class="alert alert-danger">${JSON.stringify(result)}</div>`;
         }
