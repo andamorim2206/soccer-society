@@ -4,21 +4,19 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up(): void
     {
-        Schema::create('players', function (Blueprint $table) {
+        Schema::create('matches', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('position', ['Goleiro','Zagueiro','Meio-campo','Atacante']);
-            $table->unsignedTinyInteger('xp');
+            $table->enum('status', ['pendente', 'preparado', 'iniciado', 'finalizado'])->default('pendente');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('players');
+        Schema::dropIfExists('matches');
     }
 };
