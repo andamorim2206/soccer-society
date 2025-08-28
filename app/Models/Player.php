@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Models;
 
+use App\Models\MatchGame;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,15 +14,15 @@ class Player extends Model
         'name',
         'position',
         'xp',
-        'confirmed',
-        'team_id',
     ];
 
     /**
-     * Jogador pertence a um time
+     * Relacionamento com partidas
      */
-    public function team()
+    public function matches()
     {
-        return $this->belongsTo(Team::class);
+        return $this->belongsToMany(MatchGame::class, 'match_player')
+                    ->withPivot('confirmed')
+                    ->withTimestamps();
     }
 }

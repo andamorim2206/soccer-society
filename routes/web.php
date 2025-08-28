@@ -1,17 +1,22 @@
 <?php
 
-use App\Http\Controllers\PlayerController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/api/players', [PlayerController::class, 'index']);
-Route::post('/api/players', [PlayerController::class, 'store']);
-
-
+require __DIR__.'/player.php';
+require __DIR__.'/matchgame.php';
 
 Route::get('/', function () {
     return view('index');
 });
 
 Route::get('/player/create', function () {
-    return view('playerform');
+    return view('Player.playerform');
 });
+
+Route::get('/player/list', function () {
+    return view('Player.listAll');
+});
+
+Route::get('/matchgame/create', function () {
+    return view('Matchgame.matchgameform');
+})->name('matchgame.create');

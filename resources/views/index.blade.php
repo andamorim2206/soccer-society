@@ -21,9 +21,9 @@
 
             <!-- Botões -->
             <div class="mb-4 d-flex justify-content-around">
-                <a href="/matches/create" class="btn btn-success btn-lg">⚽ Gerar Partida</a>
-                <a href="/players/create" class="btn btn-info btn-lg">➕ Adicionar Jogadores</a>
-                <a href="/players" class="btn btn-secondary btn-lg">👥 Listar Jogadores</a>
+                <a href="{{ route('matchgame.create') }}" class="btn btn-success btn-lg">⚽ Gerar Partida</a>
+                <a href="/player/create" class="btn btn-info btn-lg">➕ Adicionar Jogadores</a>
+                <a href="/player/list" class="btn btn-secondary btn-lg">👥 Listar Jogadores</a>
             </div>
 
             <!-- Listagem de partidas -->
