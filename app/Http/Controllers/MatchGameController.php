@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Repositories\MatchGameRepositoryInterface;
 use App\Models\MatchPlayer;
 use App\Models\Player;
 use App\Service\TeamBalancer;
@@ -10,19 +11,22 @@ use App\Models\MatchGame;
 
 class MatchGameController extends Controller
 {
+    protected MatchGameRepositoryInterface $repository;
+
+    public function __construct(MatchGameRepositoryInterface $repository) {
+        $this->repository = $repository;
+    }
+
     public function create(Request $request){
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
 
-        $match = MatchGame::create([
-            'name' => $request->name,
-            'status' => 'pendente', // padrão inicial
-        ]);
+        $matchId = $this->repository->create($request->all());
 
         return response()->json([
             'message' => 'Partida criada com sucesso!',
-            'matchId' => $match->id
+            'matchId' => $matchId
         ]);
     }
 
@@ -33,7 +37,7 @@ class MatchGameController extends Controller
 
     public function confirmPlayersForm($match_id)
     {
-        $match = MatchGame::findOrFail($match_id);
+        $match = $this->repository->findMatchById( $match_id );
         $players = Player::all();
     
         return view('MatchGame.matchgameconfirmed', compact('match', 'players'));
@@ -46,7 +50,7 @@ class MatchGameController extends Controller
             'players.*' => 'exists:players,id',
         ]);
 
-        $match = MatchGame::findOrFail($match_id);
+        $match = $this->repository->findMatchById( $match_id );
 
         $players = Player::whereIn('id', $request->players)->get();
 
