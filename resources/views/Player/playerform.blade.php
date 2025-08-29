@@ -8,12 +8,17 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!-- Ícones (Bootstrap Icons) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 <body>
 <div class="container mt-5">
     <div class="card shadow">
-        <div class="card-header bg-success text-white">
+        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
             <h3>Cadastrar Novo Player</h3>
+            <a href="/" class="btn btn-light btn-sm">
+                <i class="bi bi-house-fill"></i> Home
+            </a>
         </div>
         <div class="card-body">
             <div id="response"></div>
@@ -74,10 +79,14 @@ form.addEventListener('submit', async (e) => {
         });
 
         const result = await res.json();
-
+        console.log(result);
         if (res.ok) {
-            responseDiv.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
+            responseDiv.innerHTML = `<div class="alert alert-success">${result.message} Redirecionando para home...</div>`;
             form.reset();
+
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1500);
         } else {
             responseDiv.innerHTML = `<div class="alert alert-danger">${JSON.stringify(result)}</div>`;
         }

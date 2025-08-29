@@ -14,6 +14,7 @@
     <div class="card shadow">
         <div class="card-header bg-success text-white">
             <h3>⚽ Criar Nova Partida</h3>
+            <a href="/" class="btn btn-light">🏠 Home</a>
         </div>
         <div class="card-body">
             <div id="response"></div>

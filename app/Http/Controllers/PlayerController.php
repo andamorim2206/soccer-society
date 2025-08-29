@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Repositories\PlayerRepository;
+use App\Http\Controllers\Repositories\PlayerRepositoryInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Player;
 
 class PlayerController extends Controller
 {
-    public function store(Request $request)
+    protected PlayerRepositoryInterface $repository;
+    public function __construct(PlayerRepositoryInterface $repository){
+        $this->repository = $repository;
+    }
+
+    public function store(Request $request): JsonResponse
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -15,19 +23,14 @@ class PlayerController extends Controller
             'xp' => 'required|integer|min:0|max:255',
         ]);
 
-        Player::create($request->only(['name', 'position', 'xp']));
+        $player = $request->only(['name', 'position', 'xp']);
+
+        $this->repository->create($player);
 
         return response()->json(['message' => 'Player criado com sucesso!'], 201);  
     }
 
-    public function index(){
-        $players = Player::with('team')->get();
-        return response()->json($players);
-    }
-
-    public function listAll(){
-        $players = Player::All();
-
-        return response()->json($players);
+    public function listAll(): JsonResponse {
+        return $this->repository->listAll();
     }
 }

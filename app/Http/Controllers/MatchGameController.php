@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MatchPlayer;
 use App\Models\Player;
+use App\Service\TeamBalancer;
 use Illuminate\Http\Request;
 use App\Models\MatchGame;
 
@@ -65,7 +66,7 @@ class MatchGameController extends Controller
         foreach ($players as $player) {
             MatchPlayer::updateOrCreate(
                 ['match_id' => $match->id, 'player_id' => $player->id],
-                ['confirmed_at' => now()]
+                ['confirmed' => true]
             );
         }
 
@@ -93,5 +94,35 @@ class MatchGameController extends Controller
         ]);
 
         return response()->json(['message' => 'Partida cancelada com sucesso',]);
+    }
+
+    public function generateTeams(Request $request, $matchId)
+    {
+        $match = MatchGame::findOrFail($matchId);
+        $players = $match->confirmedPlayers()->get()->all();
+
+        if (count($players) < 6) {
+            return redirect()->back()->with('error', 'Não há jogadores suficientes para gerar os times.');
+        }
+
+        $playersPerTeam = $request->input('players_per_team', ceil(count($players) / 2));
+        $playersPerTeam = min($playersPerTeam, ceil(count($players) / 2)); // Garante que não exceda a metade
+
+        $balancer = new TeamBalancer();
+        $balancer->generate($players, $playersPerTeam);
+
+        $team1 = $balancer->getTeam1();
+        $team2 = $balancer->getTeam2();
+
+        return view('Matchgame.matchgamegenerationteams', compact('team1', 'team2', 'match'));
+    }
+
+    public function startMatch($matchId)
+    {
+        $match = MatchGame::findOrFail($matchId);
+        $match->status = 'iniciado';
+        $match->save();
+
+        return redirect('/')->with('success', 'Partida iniciada com sucesso!');
     }
 }

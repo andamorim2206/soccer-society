@@ -14,6 +14,7 @@
     <div class="card shadow">
         <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
             <h3 class="mb-0">👥 Jogadores Cadastrados</h3>
+            <a href="/" class="btn btn-light me-2">🏠 Home</a>
             <a href="/player/create" class="btn btn-light">➕ Cadastrar Jogador</a>
         </div>
         <div class="card-body">

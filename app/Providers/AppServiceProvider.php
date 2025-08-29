@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\Repositories\PlayerRepository;
+use App\Http\Controllers\Repositories\PlayerRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+         $this->app->bind(PlayerRepositoryInterface::class, PlayerRepository::class);
     }
 
     /**

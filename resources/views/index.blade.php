@@ -69,10 +69,7 @@ async function loadMatches() {
                     <td>${match.name}</td>
                     <td><span class="badge badge-${statusColor(match.status)}">${match.status}</span></td>
                     <td>${new Date(match.created_at).toLocaleString()}</td>
-                    <td>
-                        <a href="/matches/${match.id}" class="btn btn-sm btn-primary">Detalhes</a>
-                        <button onclick="cancelMatch(${match.id})" class="btn btn-sm btn-danger">Cancelar</button>
-                    </td>
+                    <td><button onclick="endMatch(${match.id})" class="btn btn-sm btn-danger">Finalizar</button></td>
                 </tr>
             `).join('');
         } else {
@@ -93,7 +90,7 @@ function statusColor(status) {
     }
 }
 
-async function cancelMatch(id) {
+async function endMatch(id) {
     if (!confirm('Tem certeza que deseja cancelar esta partida?')) return;
 
     try {

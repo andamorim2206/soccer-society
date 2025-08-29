@@ -15,6 +15,7 @@
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h3>Confirmar Jogadores</h3>
             <a href="/player/create" class="btn btn-success">Cadastrar Novo Player</a>
+            <a href="/" class="btn btn-light mr-2">🏠 Home</a>
         </div>
         <div class="card-body">
             <div id="response"></div>
@@ -101,7 +102,7 @@ form.addEventListener('submit', async (e) => {
         if (res.ok) {
             responseDiv.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
 
-            window.location.href = '/';
+            window.location.href = `/matchgame/${matchId}/teams`;
             loadPlayers();
         } else {
             responseDiv.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
