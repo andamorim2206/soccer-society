@@ -51,9 +51,9 @@ class MatchGameService
         $players = $this->getPlayer()->findPlayerByIds($request->players);
 
     
-        if ($players->count() < 4) {
+        if ($players->count() < 6) {
             return response()->json([
-                'message' => 'Você precisa selecionar pelo menos 4 jogadores para confirmar a partida.'
+                'message' => 'Você precisa selecionar pelo menos 6 jogadores para confirmar a partida.'
             ], 422);
         }
 
