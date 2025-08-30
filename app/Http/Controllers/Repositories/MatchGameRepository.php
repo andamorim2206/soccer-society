@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\Repositories;
 
 use App\Models\MatchGame;
-use App\Models\Player;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Database\Eloquent\Collection;
 
 class MatchGameRepository implements MatchGameRepositoryInterface 
 {
@@ -17,12 +16,23 @@ class MatchGameRepository implements MatchGameRepositoryInterface
         return $matchGame->id;
     }
 
-    public function findMatchById(int $matchId): MatchGame
-    {
+    public function load(): Collection {
+       return MatchGame::orderBy('created_at', 'desc')->get();
+    }
+
+    public function findMatchById(int $matchId): MatchGame {
         return MatchGame::findOrFail($matchId);
     }
 
-    public function finalized()
-    {}
+    public function finalized(int $matchId): bool {
+        return MatchGame::where('id', $matchId)->update([
+            'status' => 'finalizado',
+        ]);
+    }
 
+    public function start(int $matchId): bool {
+        return MatchGame::where('id', $matchId)->update([
+            'status' => 'iniciado',
+        ]);
+    }
 }

@@ -31,7 +31,7 @@ class MatchGameController extends Controller
     }
 
     public function index(){
-        $matches = MatchGame::orderBy('created_at', 'desc')->get();
+        $matches = $this->repository->load();
         return response()->json($matches);
     }
 
@@ -87,22 +87,20 @@ class MatchGameController extends Controller
 
     public function listAllGames()
     {
-        $games = MatchGame::orderBy('created_at', 'desc')->get();
+        $games = $this->repository->load(); // load
         return response()->json($games);
     }
 
-    public function finalized($id)
+    public function finalized(int $matchId)
     {
-        MatchGame::where('id', $id)->update([
-            'status' => 'finalizado',
-        ]);
+       $this->repository->finalized($matchId);
 
         return response()->json(['message' => 'Partida cancelada com sucesso',]);
     }
 
     public function generateTeams(Request $request, $matchId)
     {
-        $match = MatchGame::findOrFail($matchId);
+        $match = $this->repository->findMatchById( $matchId );
         $players = $match->confirmedPlayers()->get()->all();
 
         if (count($players) < 6) {
@@ -121,11 +119,9 @@ class MatchGameController extends Controller
         return view('Matchgame.matchgamegenerationteams', compact('team1', 'team2', 'match'));
     }
 
-    public function startMatch($matchId)
+    public function startMatch(int $matchId)
     {
-        $match = MatchGame::findOrFail($matchId);
-        $match->status = 'iniciado';
-        $match->save();
+        $this->repository->start( $matchId );
 
         return redirect('/')->with('success', 'Partida iniciada com sucesso!');
     }
