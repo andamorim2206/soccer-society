@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Repositories;
+namespace App\Repositories;
 
 use App\Models\MatchGame;
 use Illuminate\Database\Eloquent\Collection;
@@ -22,6 +22,11 @@ class MatchGameRepository implements MatchGameRepositoryInterface
 
     public function findMatchById(int $matchId): MatchGame {
         return MatchGame::findOrFail($matchId);
+    }
+
+    public function updateToPrepared(MatchGame $matchGame): void {
+        $matchGame->status = 'preparado';
+        $matchGame->save();
     }
 
     public function finalized(int $matchId): bool {

@@ -2,15 +2,15 @@
 
 use App\Http\Controllers\MatchGameController;
 
-Route::post('/api/matchgame/create', [MatchGameController::class, 'create']);
+Route::post('/api/matchgame/create', [MatchGameController::class, 'actionCreate']);
 
-Route::get('/api/matchGame/{matchId}/confirm', [MatchGameController::class, 'confirmPlayersForm'])->name('match.confirm.form');
+Route::get('/api/matchGame/{matchId}/confirm', [MatchGameController::class, 'actionConfirmPlayersForm'])->name('match.confirm.form');
 
-Route::post('/api/matchGame/{matchId}/confirm', [MatchGameController::class, 'confirmPlayers'])->name('match.confirm');
+Route::post('/api/matchGame/{matchId}/confirm', [MatchGameController::class, 'actionConfirmPlayers'])->name('match.confirm');
 
-Route::get('/api/matchGame/list', [MatchGameController::class, 'listAllGames']);
+Route::get('/api/matchGame/list', [MatchGameController::class, 'actionListAllGames']);
 
-Route::post('/api/matchGame/{matchId}/finalized', [MatchGameController::class, 'finalized']);
+Route::post('/api/matchGame/{matchId}/finalized', [MatchGameController::class, 'actionFinalized']);
 
 Route::get('/matchgame/{matchId}/teams', [MatchGameController::class, 'generateTeams'])->name('matchgame.teams');
 

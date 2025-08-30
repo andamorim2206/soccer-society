@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\Repositories;
+namespace App\Repositories;
+
 use App\Models\MatchGame;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -8,7 +9,8 @@ interface MatchGameRepositoryInterface
 {
     public function load(): Collection;
     public function create(array $data): int;
-    public function findMatchById(int $matchId): MatchGame; 
+    public function findMatchById(int $matchId): MatchGame;
+    public function updateToPrepared(MatchGame $matchGame): void;
     public function finalized(int $matchId ): bool;
     public function start(int $matchId): bool;
 }

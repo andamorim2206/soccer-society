@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use App\Http\Controllers\Repositories\MatchGameRepository;
-use App\Http\Controllers\Repositories\MatchGameRepositoryInterface;
-use App\Http\Controllers\Repositories\PlayerRepository;
-use App\Http\Controllers\Repositories\PlayerRepositoryInterface;
+use App\Repositories\MatchGameRepository;
+use App\Repositories\MatchGameRepositoryInterface;
+use App\Repositories\PlayerRepository;
+use App\Repositories\PlayerRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

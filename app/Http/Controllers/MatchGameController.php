@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Repositories\MatchGameRepositoryInterface;
-use App\Models\MatchPlayer;
-use App\Models\Player;
-use App\Service\TeamBalancer;
+use App\Repositories\MatchGameRepository;
+use App\Repositories\MatchGameRepositoryInterface;
+use App\Repositories\MatchPlayerRepository;
+use App\Repositories\PlayerRepository;
+use App\Service\MatchGameService;
+use App\Service\PlayerService;
+use App\Service\MatchPlayerService;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use App\Models\MatchGame;
 
 class MatchGameController extends Controller
 {
@@ -17,12 +22,11 @@ class MatchGameController extends Controller
         $this->repository = $repository;
     }
 
-    public function create(Request $request){
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+    public function actionCreate(Request $request){
+        
+        $matchGame = new MatchGameService(new MatchGameRepository());
 
-        $matchId = $this->repository->create($request->all());
+        $matchId = $matchGame->create($request);
 
         return response()->json([
             'message' => 'Partida criada com sucesso!',
@@ -30,93 +34,44 @@ class MatchGameController extends Controller
         ]);
     }
 
-    public function index(){
-        $matches = $this->repository->load();
-        return response()->json($matches);
-    }
-
-    public function confirmPlayersForm($match_id)
+    public function actionConfirmPlayersForm($matchId)
     {
-        $match = $this->repository->findMatchById( $match_id );
-        $players = Player::all();
+        $match = (new MatchGameService(new MatchGameRepository()))
+            ->setPlayer(new PlayerService(new PlayerRepository()))
+            ->findMatchById( $matchId )
+        ;
+
+        $players = $match->getPlayer()->listAll();
     
         return view('MatchGame.matchgameconfirmed', compact('match', 'players'));
     }
 
-    public function confirmPlayers(Request $request, $match_id)
+    public function actionConfirmPlayers(Request $request, $matchId)
     {
-        $request->validate([
-            'players' => 'required|array|min:1',
-            'players.*' => 'exists:players,id',
-        ]);
-
-        $match = $this->repository->findMatchById( $match_id );
-
-        $players = Player::whereIn('id', $request->players)->get();
-
-        if ($players->count() < 6) {
-            return response()->json([
-                'message' => 'Você precisa selecionar pelo menos 6 jogadores para confirmar a partida.'
-            ], 422);
-        }
-
-        $goalkeepers = $players->where('position', 'Goleiro');
-        if ($goalkeepers->count() < 2) {
-            return response()->json([
-                'message' => 'A partida precisa ter pelo menos 2 goleiros entre os jogadores selecionados.'
-            ], 422);
-        }
-
-        foreach ($players as $player) {
-            MatchPlayer::updateOrCreate(
-                ['match_id' => $match->id, 'player_id' => $player->id],
-                ['confirmed' => true]
-            );
-        }
-
-        $confirmedCount = MatchPlayer::where('match_id', $match->id)->count(); 
-        if ($confirmedCount >= 12) {
-            $match->status = 'preparado';
-            $match->save();
-        }
-
-        return response()->json([
-            'message' => 'Jogadores confirmados e adicionados à partida com sucesso!',
-        ]);
+        return (new MatchGameService(new MatchGameRepository()))
+            ->setPlayer(new PlayerService(new PlayerRepository()))
+            ->setMatchPlayer(new MatchPlayerService(new MatchPlayerRepository()))
+            ->confirmPlayers( $request, $matchId )
+        ;
     }
 
-    public function listAllGames()
+    public function actionListAllGames(): JsonResponse
     {
-        $games = $this->repository->load(); // load
+        $games = (new MatchGameService(new MatchGameRepository()))->load();
+
         return response()->json($games);
     }
 
-    public function finalized(int $matchId)
+    public function actionFinalized(int $matchId): JsonResponse
     {
-       $this->repository->finalized($matchId);
+       (new MatchGameService(new MatchGameRepository()))->finalized( $matchId );
 
         return response()->json(['message' => 'Partida cancelada com sucesso',]);
     }
 
-    public function generateTeams(Request $request, $matchId)
+    public function generateTeams(Request $request, $matchId): RedirectResponse | View
     {
-        $match = $this->repository->findMatchById( $matchId );
-        $players = $match->confirmedPlayers()->get()->all();
-
-        if (count($players) < 6) {
-            return redirect()->back()->with('error', 'Não há jogadores suficientes para gerar os times.');
-        }
-
-        $playersPerTeam = $request->input('players_per_team', ceil(count($players) / 2));
-        $playersPerTeam = min($playersPerTeam, ceil(count($players) / 2)); // Garante que não exceda a metade
-
-        $balancer = new TeamBalancer();
-        $balancer->generate($players, $playersPerTeam);
-
-        $team1 = $balancer->getTeam1();
-        $team2 = $balancer->getTeam2();
-
-        return view('Matchgame.matchgamegenerationteams', compact('team1', 'team2', 'match'));
+        return (new MatchGameService(new MatchGameRepository()))->generateTeams($request, $matchId );
     }
 
     public function startMatch(int $matchId)
