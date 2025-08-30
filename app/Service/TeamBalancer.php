@@ -26,7 +26,15 @@ class TeamBalancer
     {
         $this->team1 = [];
         $this->team2 = [];
-    
+
+        $goalkeepers = array_filter($players, fn($p) => $p->position === 'Goleiro');
+        if (count($goalkeepers) >= 2) {
+            $this->team1[] = array_shift($goalkeepers);
+            $this->team2[] = array_shift($goalkeepers);
+        }
+
+        $players = array_filter($players, fn($p) => $p->position !== 'Goleiro');
+
         $root = null;
         foreach ($players as $player) {
             $root = $this->insertBST($root, $player);
@@ -62,7 +70,6 @@ class TeamBalancer
         return $node;
     }
 
-    // Percorre árvore em ordem decrescente
     private function reverseInOrder($node, array &$result)
     {
         if ($node === null) return;

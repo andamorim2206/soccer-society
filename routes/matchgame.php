@@ -12,8 +12,8 @@ Route::get('/api/matchGame/list', [MatchGameController::class, 'actionListAllGam
 
 Route::post('/api/matchGame/{matchId}/finalized', [MatchGameController::class, 'actionFinalized']);
 
-Route::get('/matchgame/{matchId}/teams', [MatchGameController::class, 'generateTeams'])->name('matchgame.teams');
+Route::get('/matchgame/{matchId}/teams', [MatchGameController::class, 'actionGenerateTeams'])->name('matchgame.teams');
 
-Route::post('/api/matchgame/{matchId}/start', [MatchGameController::class, 'startMatch'])->name('matchgame.start');
+Route::post('/api/matchgame/{matchId}/start', [MatchGameController::class, 'actionStartMatch'])->name('matchgame.start');
 
 

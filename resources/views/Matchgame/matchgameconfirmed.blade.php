@@ -14,7 +14,7 @@
     <div class="card shadow">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h3>Confirmar Jogadores</h3>
-            <a href="/player/create" class="btn btn-success">Cadastrar Novo Player</a>
+             <a href="/player/create" class="btn btn-light">➕ Cadastrar Jogador</a>
             <a href="/" class="btn btn-light mr-2">🏠 Home</a>
         </div>
         <div class="card-body">

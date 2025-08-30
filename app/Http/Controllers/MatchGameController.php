@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\MatchGameRepository;
-use App\Repositories\MatchGameRepositoryInterface;
 use App\Repositories\MatchPlayerRepository;
 use App\Repositories\PlayerRepository;
 use App\Service\MatchGameService;
@@ -16,12 +15,6 @@ use Illuminate\Http\Request;
 
 class MatchGameController extends Controller
 {
-    protected MatchGameRepositoryInterface $repository;
-
-    public function __construct(MatchGameRepositoryInterface $repository) {
-        $this->repository = $repository;
-    }
-
     public function actionCreate(Request $request){
         
         $matchGame = new MatchGameService(new MatchGameRepository());
@@ -69,14 +62,14 @@ class MatchGameController extends Controller
         return response()->json(['message' => 'Partida cancelada com sucesso',]);
     }
 
-    public function generateTeams(Request $request, $matchId): RedirectResponse | View
+    public function actionGenerateTeams(Request $request, $matchId): RedirectResponse | View
     {
         return (new MatchGameService(new MatchGameRepository()))->generateTeams($request, $matchId );
     }
 
-    public function startMatch(int $matchId)
+    public function actionStartMatch(int $matchId)
     {
-        $this->repository->start( $matchId );
+        (new MatchGameService(new MatchGameRepository()))->start( $matchId );
 
         return redirect('/')->with('success', 'Partida iniciada com sucesso!');
     }
