@@ -56,7 +56,7 @@
     </div>
 
     <p class="text-muted mt-2" style="font-size: 0.9rem;">
-        O sistema organiza os jogadores em uma árvore binária baseada na experiência, permitindo que os mais habilidosos sejam rapidamente identificados e acessados. A partir dessa estrutura, os jogadores são distribuídos entre os dois times de forma alternada, sempre equilibrando a soma de experiência de cada time. Durante a alocação, são respeitadas as regras de posições mínimas, garantindo que cada time tenha goleiros, zagueiros, meio-campistas e atacantes suficientes. O resultado final é uma divisão justa e balanceada, tanto em habilidade quanto em função, pronta para a partida.
+        O sistema organiza os jogadores em uma árvore binária baseada na experiência, permitindo que os mais habilidosos sejam rapidamente identificados e acessados. A partir dessa estrutura, os jogadores são distribuídos entre os dois times de forma alternada, sempre equilibrando a soma de experiência de cada time. Durante a alocação, são respeitadas as regras de posições mínimas, garantindo que cada time tenha goleiros para cada time. O resultado final é uma divisão justa e balanceada, tanto em habilidade quanto em função, pronta para a partida.
     </p>
 </div>
 
