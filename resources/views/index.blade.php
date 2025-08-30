@@ -69,7 +69,10 @@ async function loadMatches() {
                     <td>${match.name}</td>
                     <td><span class="badge badge-${statusColor(match.status)}">${match.status}</span></td>
                     <td>${new Date(match.created_at).toLocaleString()}</td>
-                    <td><button onclick="endMatch(${match.id})" class="btn btn-sm btn-danger">Finalizar</button></td>
+                    <td>
+                         <button onclick="showMatchDetails(${match.id})" class="btn btn-sm btn-info">Detalhes</button>
+                        <button onclick="endMatch(${match.id})" class="btn btn-sm btn-danger">Finalizar</button>
+                    </td>
                 </tr>
             `).join('');
         } else {
@@ -88,6 +91,10 @@ function statusColor(status) {
         case 'finalizado': return 'secondary';
         default: return 'dark';
     }
+}
+
+function showMatchDetails(id) {
+    window.location.href = `/matchgame/${id}/teams`;
 }
 
 async function endMatch(id) {
