@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('match_game', function (Blueprint $table) {
+        Schema::create('match_games', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->enum('status', ['pendente', 'preparado', 'iniciado', 'finalizado'])->default('pendente');
@@ -17,6 +17,6 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('match_game');
+        Schema::dropIfExists('match_games');
     }
 };
