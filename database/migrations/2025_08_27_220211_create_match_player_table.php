@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('match_player', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('match_id')->constrained('matches')->onDelete('cascade');
+            $table->foreignId('match_id')->constrained('match_game')->onDelete('cascade');
             $table->foreignId('player_id')->constrained('players')->onDelete('cascade');
             $table->boolean('confirmed')->default(false);
             $table->timestamps();
