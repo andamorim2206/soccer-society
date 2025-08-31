@@ -65,7 +65,12 @@ Instalar as Dependencias(dentro container)
 Chave do Laravel(ainda dentro do container)
 
         php artisan key:generate
-Rodar a migrate e seeder
+
+Rodar as permissoes (ainda dentro do container)
+
+    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+Rodar a migrate e seeder (Dentro do Container)
 
         php artisan migrate --seed
 
