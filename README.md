@@ -58,7 +58,7 @@ Suba os container
 Acessar o container
 
         docker-compose exec laravel_app bash
-Instalar as Dependencias
+Instalar as Dependencias(dentro container)
 
         composer install
 
