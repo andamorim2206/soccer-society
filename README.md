@@ -67,8 +67,7 @@ Chave do Laravel(ainda dentro do container)
         php artisan key:generate
 Rodar a migrate e seeder
 
-        php artisan migrate
-        php artisan db:seed
+        php artisan migrate --seed
 
 Apos isso saia do container e acesse:
 
