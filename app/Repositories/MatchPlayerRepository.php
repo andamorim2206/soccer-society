@@ -10,7 +10,10 @@ class MatchPlayerRepository implements MatchPlayerRepositoryInterface
    public function updateOrCreate(int $matchId, int $playerId): void{
          MatchPlayer::updateOrCreate( 
                 ['match_id' => $matchId, 'player_id' => $playerId],
-                ['confirmed' => true]
+                [
+                  'status' => 'reserva',
+                  'confirmed' => true
+               ],
             );
    }
 

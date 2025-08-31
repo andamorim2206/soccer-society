@@ -9,6 +9,7 @@ return new class extends Migration {
     {
         Schema::create('match_player', function (Blueprint $table) {
             $table->id();
+            $table->enum('status', ['titular', 'reserva', 'encerrado'])->default('reserva');
             $table->foreignId('match_id')->constrained('match_games')->onDelete('cascade');
             $table->foreignId('player_id')->constrained('players')->onDelete('cascade');
             $table->boolean('confirmed')->default(false);

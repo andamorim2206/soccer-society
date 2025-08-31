@@ -37,4 +37,7 @@ class PlayerService
         return $this->repository->findPlayerByIds($playerIds);
     }
     
+    public function listAllPlayersAvailableToMatch(): JsonResponse {
+        return $this->repository->listAllPlayersAvailableToMatch();
+    }
 }

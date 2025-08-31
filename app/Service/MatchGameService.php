@@ -39,21 +39,29 @@ class MatchGameService
         return $this->repository->findMatchById( $matchId );
     }
 
-    public function confirmPlayers(Request $request, $matchId): JsonResponse {
+    public function loadMatchAndPlayerForMatch(int $matchId): array {
+        $match = $this->repository->findMatchById($matchId);
+        $players = $this->getPlayer()->listAllPlayersAvailableToMatch();  
 
+        return [
+            'match' => $match,
+            'players' => $players
+        ];
+    }
+
+    public function confirmPlayers(Request $request, $matchId): JsonResponse {
         $request->validate([
             'players' => 'required|array|min:1',
             'players.*' => 'exists:players,id',
         ]);
-    
         $matchGame = $this->repository->findMatchById( $matchId );
 
         $players = $this->getPlayer()->findPlayerByIds($request->players);
 
     
-        if ($players->count() < 6) {
+        if ($players->count() % 2 != 0) {
             return response()->json([
-                'message' => 'Você precisa selecionar pelo menos 6 jogadores para confirmar a partida.'
+                'message' => 'Você precisa selecionar pelo menos numero par de jogadores para continuar a partida.'
             ], 422);
         }
 
@@ -69,7 +77,7 @@ class MatchGameService
         }
 
         $confirmedCount = $this->getMatchPlayer()->countPlayersByMatchId($matchGame->id);
-        if ($confirmedCount >= 12) {
+        if ($confirmedCount % 2 == 0 ) {
            $this->repository->updateToPrepared($matchGame);
         }
 
@@ -90,10 +98,6 @@ class MatchGameService
         $match = $this->repository->findMatchById( $matchId );
         $players = $match->confirmedPlayers()->get()->all();
 
-        if (count($players) < 6) {
-            return redirect()->back()->with('error', 'Não há jogadores suficientes para gerar os times.');
-        }
-
         $playersPerTeam = $request->input('players_per_team', ceil(count($players) / 2));
         $playersPerTeam = min($playersPerTeam, ceil(count($players) / 2)); // Garante que não exceda a metade
 
@@ -103,7 +107,9 @@ class MatchGameService
         $team1 = $balancer->getTeam1();
         $team2 = $balancer->getTeam2();
 
-        return view('Matchgame.matchgamegenerationteams', compact('team1', 'team2', 'match'));
+       return view('Matchgame.matchgamegenerationteams', compact('team1', 'team2', 'match'));
+
+       //return view('Matchgame.matchgamegenerationteams');
     }
 
     public function setPlayer(PlayerService $playerService): self {

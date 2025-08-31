@@ -52,9 +52,9 @@ const form = document.getElementById('confirmForm');
 
 async function loadPlayers() {
     try {
-        const res = await fetch('/api/players/list');
+        const res = await fetch('/api/players/listAllPlayersAvailableToMatch');
         const players = await res.json();
-
+        console.log(players);
         playerTable.innerHTML = '';
 
         players.forEach(player => {

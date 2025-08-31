@@ -29,14 +29,18 @@ class MatchGameController extends Controller
 
     public function actionConfirmPlayersForm($matchId)
     {
-        $match = (new MatchGameService(new MatchGameRepository()))
+        $data = (new MatchGameService(new MatchGameRepository()))
             ->setPlayer(new PlayerService(new PlayerRepository()))
-            ->findMatchById( $matchId )
+            ->loadMatchAndPlayerForMatch( $matchId )
         ;
-
-        $players = $match->getPlayer()->listAll();
+        
+        $match = $data['match'];
+        $players = $data['players'];
     
-        return view('MatchGame.matchgameconfirmed', compact('match', 'players'));
+        return view('matchgame.confirmed', [
+            'match'   => $data['match'],
+            'players' => $data['players'],
+        ]);
     }
 
     public function actionConfirmPlayers(Request $request, $matchId)

@@ -9,6 +9,8 @@ interface PlayerRepositoryInterface
 {
     public function create(array $player): void;
     public function listAll(): JsonResponse;
+
+    public function listAllPlayersAvailableToMatch(): JsonResponse;  
     public function findPlayerByIds(array $players):Collection;
 
 }
