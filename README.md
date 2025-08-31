@@ -48,7 +48,7 @@ Setup Docker Laravel 11 com PHP 8.3
 ------------------------------------------------------------
 Clone o Repositorio
 
-        git clone https://github.com/usuario/nome-do-projeto.git
+        git@github.com:andamorim2206/soccer-society.git
 Instala o . env
 
         cp .env.example .env
