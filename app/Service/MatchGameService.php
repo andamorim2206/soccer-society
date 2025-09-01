@@ -18,7 +18,10 @@ class MatchGameService
     protected MatchGameRepositoryInterface $repository;
     private PlayerService $playerService;
     private MatchPlayerService $matchPlayerService;
-      
+
+    private ?int $matchId = null;
+
+    
     public function __construct(MatchGameRepositoryInterface $repository) {
         $this->repository = $repository;
     }
@@ -94,22 +97,36 @@ class MatchGameService
         $this->repository->start($matchId);
     }
 
-    public function generateTeams(Request $request, $matchId): RedirectResponse | View  {
+    public function generateTeams(Request $request, $matchId): JsonResponse  {
         $match = $this->repository->findMatchById( $matchId );
-        $players = $match->confirmedPlayers()->get()->all();
-
-        $playersPerTeam = $request->input('players_per_team', ceil(count($players) / 2));
-        $playersPerTeam = min($playersPerTeam, ceil(count($players) / 2)); // Garante que não exceda a metade
+        $players = $this->getMatchPlayer()->findConfirmedPlayersByMatchId( $matchId );
 
         $balancer = new TeamBalancer();
-        $balancer->generate($players, $playersPerTeam);
+        $balancer->generateTeams($players, $request["playersPerTeam"]);
 
         $team1 = $balancer->getTeam1();
         $team2 = $balancer->getTeam2();
+        $bench = $balancer->getBench();
 
-       return view('Matchgame.matchgamegenerationteams', compact('team1', 'team2', 'match'));
+       $formatResponse = function($players) {
+        return array_map(function($p) {
+                return [
+                    'Name'     => method_exists($p, 'getName') ? $p->getName() : '',
+                    'Position' => method_exists($p, 'getPosition') ? $p->getPosition() : '',
+                    'Xp'       => method_exists($p, 'getXp') ? $p->getXp() : 0,
+                ];
+            }, $players);
+        };
 
-       //return view('Matchgame.matchgamegenerationteams');
+        $response = [
+            'teams' => [
+                'team1' => $formatResponse($team1),
+                'team2' => $formatResponse($team2),
+                'bench' => $formatResponse($bench),
+            ]
+         ];
+
+        return response()->json($response);
     }
 
     public function setPlayer(PlayerService $playerService): self {
@@ -130,5 +147,15 @@ class MatchGameService
 
     public function getMatchPlayer(): MatchPlayerService {
         return $this->matchPlayerService;
+    }
+
+    public function setId(?int $id): self {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    public function getId(): ?int {
+        return $this->id;
     }
 }

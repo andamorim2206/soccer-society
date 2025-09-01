@@ -24,3 +24,12 @@ Route::get('/matchgame/create', function () {
 Route::get('/matchgame/{id}/list/confirmed', function () {
     return view('Matchgame.matchgameconfirmed');
 })->name('matchgame.confirmed');
+
+Route::get('/matchgame/{id}/list/edit', function () {
+    return view('Matchgame.matchgameedit');
+})->name('matchgame.edit');
+
+Route::get('/matchgame/{id}/generate/teams', function () {
+    return view('Matchgame.matchgamegenerationteamsv2');
+})->name('matchgame.generateteamsv2');
+

@@ -6,77 +6,29 @@ use App\Models\Player;
 
 class TeamBalancer
 {
-    protected array $positionsMin = [
-        'Goleiro' => 1,
-        'Zagueiro' => 2,
-        'Meio-campo' => 2,
-        'Atacante' => 2,
-    ];
+    private array $team1 = [];
+    private array $team2 = [];
+    private array $bench = [];
 
-    protected int $playersPerTeam;
-    protected array $team1 = [];
-    protected array $team2 = [];
-
-    public function __construct(int $playersPerTeam = 6)
-    {
-        $this->playersPerTeam = $playersPerTeam;
-    }
-
-    public function generate(array $players, int $playersPerTeam): void
+    public function generateTeams(array $players, int $playersPerTeam): array
     {
         $this->team1 = [];
         $this->team2 = [];
+        $this->bench = [];
 
-        $goalkeepers = array_filter($players, fn($p) => $p->position === 'Goleiro');
-        if (count($goalkeepers) >= 2) {
-            $this->team1[] = array_shift($goalkeepers);
-            $this->team2[] = array_shift($goalkeepers);
-        }
+        $playersByPosition = $this->groupPlayersByPosition($players);
 
-        $players = array_filter($players, fn($p) => $p->position !== 'Goleiro');
+        $this->setupInitialTeams($playersByPosition, $playersPerTeam);
 
-        $root = null;
-        foreach ($players as $player) {
-            $root = $this->insertBST($root, $player);
-        }
+        $this->placeRemainingPlayers($playersByPosition, $playersPerTeam);
 
-        $sortedPlayers = [];
-        $this->reverseInOrder($root, $sortedPlayers);
+        $this->bench = $this->determineBench($players);
 
-        foreach ($sortedPlayers as $player) {
-            $xpTeam1 = array_sum(array_map(fn($p) => $p->xp, $this->team1));
-            $xpTeam2 = array_sum(array_map(fn($p) => $p->xp, $this->team2));
-
-            if ((count($this->team1) < $playersPerTeam && $xpTeam1 <= $xpTeam2) || count($this->team2) >= $playersPerTeam) {
-                $this->team1[] = $player;
-            } else {
-                $this->team2[] = $player;
-            }
-        }
-    }
-
-    private function insertBST($node, Player $player)
-    {
-        if ($node === null) {
-            return ['player' => $player, 'left' => null, 'right' => null];
-        }
-
-        if ($player->xp < $node['player']->xp) {
-            $node['left'] = $this->insertBST($node['left'], $player);
-        } else {
-            $node['right'] = $this->insertBST($node['right'], $player);
-        }
-
-        return $node;
-    }
-
-    private function reverseInOrder($node, array &$result)
-    {
-        if ($node === null) return;
-
-        $this->reverseInOrder($node['right'], $result);
-        $result[] = $node['player'];
-        $this->reverseInOrder($node['left'], $result);
+        return [
+            'team1' => $this->team1,
+            'team2' => $this->team2,
+            'bench' => $this->bench,
+        ];
     }
 
     public function getTeam1(): array
@@ -87,5 +39,103 @@ class TeamBalancer
     public function getTeam2(): array
     {
         return $this->team2;
+    }
+
+    public function getBench(): array
+    {
+        return $this->bench;
+    }
+
+    private function groupPlayersByPosition(array $players): array
+    {
+        $grouped = [];
+        foreach ($players as $player) {
+            $grouped[$player->getPosition()][] = $player;
+        }
+
+        foreach ($grouped as &$group) {
+            usort($group, fn($a, $b) => $b->getXp() <=> $a->getXp());
+        }
+
+        return $grouped;
+    }
+
+private function setupInitialTeams(array &$playersByPosition, int $playersPerTeam): void
+{
+    foreach (Player::getPositions() as $position) {
+        if (!array_key_exists($position, $playersByPosition) || !is_array($playersByPosition[$position])) {
+            $playersByPosition[$position] = [];
+        }
+
+        $players = &$playersByPosition[$position];
+
+        if ($this->isRangedPosition($position)) {
+            $this->placeRangedPlayers($players, $playersPerTeam);
+        } else {
+            $this->placeFixedPlayers($players, $playersPerTeam);
+        }
+    }
+}
+
+private function placeRangedPlayers(array &$players, int $playersPerTeam): void
+{
+    foreach (['team1', 'team2'] as $team) {
+        if (!empty($players) && count($this->{$team}) < $playersPerTeam) {
+            $this->{$team}[] = array_shift($players);
+        }
+    }
+}
+
+private function placeFixedPlayers(array &$players, int $playersPerTeam): void
+{
+    foreach (['team1', 'team2'] as $team) {
+        if (!empty($players) && count($this->{$team}) < $playersPerTeam) {
+            $this->{$team}[] = array_shift($players);
+        }
+    }
+}
+
+    private function placeRemainingPlayers(array &$playersByPosition, int $playersPerTeam): void
+    {
+        $remainingPlayers = [];
+        foreach ($playersByPosition as $group) {
+            $remainingPlayers = array_merge($remainingPlayers, $group);
+        }
+
+        foreach ($remainingPlayers as $player) {
+            if ($this->canAddToTeam($this->team1, $playersPerTeam)) {
+                $this->team1[] = $player;
+                continue;
+            }
+
+            if ($this->canAddToTeam($this->team2, $playersPerTeam)) {
+                $this->team2[] = $player;
+                continue;
+            }
+        }
+    }
+
+    private function determineBench(array $allPlayers): array
+    {
+        $assignedPlayers = array_merge($this->team1, $this->team2);
+
+        return array_filter($allPlayers, function($player) use ($assignedPlayers) {
+            foreach ($assignedPlayers as $assigned) {
+                if ($player->getId() === $assigned->getId()) {
+                    return false;
+                }
+            }
+            return true;
+        });
+    }
+
+    private function canAddToTeam(array $team, int $playersPerTeam): bool
+    {
+        return count($team) < $playersPerTeam;
+    }
+
+    private function isRangedPosition(string $position): bool
+    {
+        return in_array($position, ['Atacante', 'Meio-campo']);
     }
 }

@@ -81,12 +81,8 @@ form.addEventListener('submit', async (e) => {
         const result = await res.json();
         console.log(result);
         if (res.ok) {
-            responseDiv.innerHTML = `<div class="alert alert-success">${result.message} Redirecionando para home...</div>`;
+            responseDiv.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
             form.reset();
-
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 1500);
         } else {
             responseDiv.innerHTML = `<div class="alert alert-danger">${JSON.stringify(result)}</div>`;
         }

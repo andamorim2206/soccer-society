@@ -25,4 +25,9 @@ class Player extends Model
                     ->withPivot('confirmed')
                     ->withTimestamps();
     }
+
+    public static function getPositions(): array
+    {
+        return ['Goleiro', 'Zagueiro', 'Meio-campo', 'Atacante'];
+    }
 }

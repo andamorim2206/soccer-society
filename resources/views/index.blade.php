@@ -94,7 +94,7 @@ function statusColor(status) {
 }
 
 function showMatchDetails(id) {
-    window.location.href = `/matchgame/${id}/teams`;
+    window.location.href = `/matchgame/${id}/generate/teams`;
 }
 
 async function endMatch(id) {

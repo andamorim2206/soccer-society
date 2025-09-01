@@ -33,9 +33,6 @@ class MatchGameController extends Controller
             ->setPlayer(new PlayerService(new PlayerRepository()))
             ->loadMatchAndPlayerForMatch( $matchId )
         ;
-        
-        $match = $data['match'];
-        $players = $data['players'];
     
         return view('matchgame.confirmed', [
             'match'   => $data['match'],
@@ -65,10 +62,14 @@ class MatchGameController extends Controller
 
         return response()->json(['message' => 'Partida cancelada com sucesso',]);
     }
+    
 
-    public function actionGenerateTeams(Request $request, $matchId): RedirectResponse | View
+    public function actionGenerateTeams(Request $request, $matchId): JsonResponse
     {
-        return (new MatchGameService(new MatchGameRepository()))->generateTeams($request, $matchId );
+        return (new MatchGameService(new MatchGameRepository()))
+            ->setMatchPlayer(new MatchPlayerService(new MatchPlayerRepository()))
+            ->generateTeams($request, $matchId )
+        ;
     }
 
     public function actionStartMatch(int $matchId)

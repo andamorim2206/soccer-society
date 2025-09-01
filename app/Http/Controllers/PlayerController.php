@@ -28,6 +28,8 @@ class PlayerController extends Controller
     public function actionListAllPlayersAvailableToMatch(): JsonResponse {
         $player = new PlayerService(new PlayerRepository());
 
-        return $player->listAllPlayersAvailableToMatch();
+        $players = $player->listAllPlayersAvailableToMatch();
+    
+        return response()->json($players);
     }
 }
