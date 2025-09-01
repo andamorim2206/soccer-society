@@ -39,10 +39,6 @@ Depois, preenche os times com os jogadores restantes na ordem que aparecem, sem 
 
 Essa abordagem é simples, eficiente e rápida, ideal para cenários em que a prioridade é rapidez e simplicidade de balanceamento, mesmo que não produza uma solução perfeita para todos os cenários possíveis.
 
-Se você quiser, posso criar uma versão ainda mais resumida e visual, que explique o fluxo com um esquema de texto tipo diagrama, bem didático para o README.
-
-Quer que eu faça isso?
-
 Setup Docker Laravel 11 com PHP 8.3
 ------------------------------------------------------------
 Clone o Repositorio
