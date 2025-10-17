@@ -1,9 +1,5 @@
 SOCCER SOCIETY
 ---------------------------        
-Monte partidas de futebol society e organize Jogadores por Posiçoes e XP em time rivais.
-
-Disponivel no link abaixo:
-http://34.31.155.121:8080/
 
 Balanceamento de Times - Explicação Teórica
 -----------------------------------------------------------
